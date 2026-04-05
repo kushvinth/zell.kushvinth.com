@@ -1,14 +1,260 @@
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
+    <title>ZELL By kushvinth</title>
+    <style>
+      :root {
+        --bg: #0a0a0a;
+        --panel: #121212;
+        --muted: #9a9a9a;
+        --text: #f3f3f3;
+        --accent: #fe6b36;
+        --border: #2c2c2c;
+      }
 
-  <!-- Redirect immediately -->
-  <meta http-equiv="refresh" content="0; url=https://github.com/kushvinth/zell" />
+      * { box-sizing: border-box; }
 
-  <title>Redirecting...</title>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+        background: radial-gradient(circle at 10% 10%, #1a1a1a 0, var(--bg) 45%);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
 
-  <script>
-    // Fallback for browsers that ignore meta refresh
-    window.location.replace("https://github.com/kushvinth/zell");
-  </script>
-</head>
+      .card {
+        width: min(860px, 100%);
+        background: linear-gradient(180deg, #171717, var(--panel));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        letter-spacing: 0.02em;
+        color: var(--text);
+      }
+
+      .sub {
+        margin: 0 0 20px;
+        font-size: 13px;
+        color: var(--muted);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.5;
+      }
+
+      /* Terminal block */
+      .cmd-block {
+        background: #0c0c0c;
+        border: 1px solid #252525;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .cmd-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border-bottom: 1px solid #1e1e1e;
+      }
+
+      .dots { display: flex; gap: 6px; }
+      .dot { width: 10px; height: 10px; border-radius: 50%; }
+      .d-red    { background: #ff5f57; }
+      .d-yellow { background: #febc2e; }
+      .d-green  { background: #28c840; }
+
+      .prompt-label {
+        font-size: 11px;
+        color: #444;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .icon-btn {
+        background: none;
+        border: 1px solid #2c2c2c;
+        border-radius: 7px;
+        padding: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        transition: color 0.15s, border-color 0.15s, background 0.15s;
+      }
+      .icon-btn:hover { color: #f0f0f0; border-color: #444; background: #1c1c1c; }
+      .icon-btn.copied { color: #28c840; border-color: #28c840; }
+
+      .cmd-body {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+
+      .prompt-char { color: var(--accent); font-size: 15px; user-select: none; flex-shrink: 0; }
+
+      code {
+        color: #ffd9ca;
+        font-size: 13.5px;
+        flex: 1;
+        overflow-x: auto;
+        white-space: nowrap;
+        display: block;
+      }
+
+      .actions-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px 14px;
+        border-top: 1px solid #1a1a1a;
+        flex-wrap: wrap;
+      }
+
+      .pill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+      }
+      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-primary:hover { background: #e55a28; }
+      .btn-ghost { background: #1a1a1a; color: #aaa; border: 1px solid #2c2c2c; }
+      .btn-ghost:hover { background: #222; color: #eee; }
+
+      /* Meta row */
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .meta-item {
+        background: #0e0e0e;
+        border: 1px solid #1e1e1e;
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      .meta-label {
+        font-size: 10px;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .meta-val {
+        font-size: 12.5px;
+        color: var(--accent);
+      }
+
+      @media (max-width: 480px) {
+        .meta { grid-template-columns: 1fr 1fr; }
+        .meta-item:last-child { grid-column: span 2; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>ZELL</h1>
+      <p class="sub">One-line install · macOS &amp; Linux · Requires Docker + Git</p>
+
+      <div class="cmd-block">
+        <div class="cmd-bar">
+          <div class="dots">
+            <div class="dot d-red"></div>
+            <div class="dot d-yellow"></div>
+            <div class="dot d-green"></div>
+          </div>
+          <span class="prompt-label">bash</span>
+          <button class="icon-btn" id="copy-icon-btn" title="Copy command">
+            <svg id="copy-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="cmd-body">
+          <span class="prompt-char">$</span>
+          <code id="install-cmd">curl -fsSL https://zell.kushvinth.com/install.sh | bash</code>
+        </div>
+
+        <div class="actions-row">
+          <a class="pill-btn btn-ghost" href="https://github.com/kushvinth/ZELL" target="_blank" rel="noreferrer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="meta-item">
+          <div class="meta-label">Frontend</div>
+          <div class="meta-val">localhost:3000</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Backend API</div>
+          <div class="meta-val">localhost:8000</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Requires</div>
+          <div class="meta-val" style="color:#777; font-size:12px;">Docker · Git</div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const installCmdEl = document.getElementById('install-cmd');
+      const installScriptUrl = `${window.location.origin}/install.sh`;
+      const cmd = `curl -fsSL ${installScriptUrl} | bash`;
+      installCmdEl.textContent = cmd;
+
+      function flashCopy() {
+        const iconBtn = document.getElementById('copy-icon-btn');
+        const svg = document.getElementById('copy-svg');
+        iconBtn.classList.add('copied');
+        svg.innerHTML = '<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+
+        setTimeout(() => {
+          iconBtn.classList.remove('copied');
+          svg.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+        }, 1500);
+      }
+
+      async function doCopy() {
+        try {
+          await navigator.clipboard.writeText(cmd);
+          flashCopy();
+        } catch {}
+      }
+
+      document.getElementById('copy-icon-btn').addEventListener('click', doCopy);
+    </script>
+  </body>
+</html>

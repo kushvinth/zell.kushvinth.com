@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>ZELL By kushvinth</title>
     <style>
       :root {
@@ -199,7 +200,7 @@
 
         <div class="cmd-body">
           <span class="prompt-char">$</span>
-          <code id="install-cmd">curl -fsSL https://zell.kushvinth.com/install.sh | bash</code>
+          <code id="install-cmd">curl -fsSL https://vercel.kushvinth.com/install.sh | bash</code>
         </div>
 
         <div class="actions-row">
@@ -230,7 +231,7 @@
 
     <script>
       const installCmdEl = document.getElementById('install-cmd');
-      const installScriptUrl = `${window.location.origin}/install.sh`;
+      const installScriptUrl = 'https://vercel.kushvinth.com/install.sh';
       const cmd = `curl -fsSL ${installScriptUrl} | bash`;
       installCmdEl.textContent = cmd;
 
